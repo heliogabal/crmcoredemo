@@ -1,7 +1,7 @@
-/*!
- * jQuery UI Droppable 1.8.24
+/*
+ * jQuery UI Droppable 1.8.11
  *
- * Copyright 2012, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  *
@@ -147,7 +147,7 @@ $.widget("ui.droppable", {
 });
 
 $.extend($.ui.droppable, {
-	version: "1.8.24"
+	version: "1.8.11"
 });
 
 $.ui.intersect = function(draggable, droppable, toleranceMode) {
@@ -227,7 +227,7 @@ $.ui.ddmanager = {
 
 			if(!this.options) return;
 			if (!this.options.disabled && this.visible && $.ui.intersect(draggable, this, this.options.tolerance))
-				dropped = this._drop.call(this, event) || dropped;
+				dropped = dropped || this._drop.call(this, event);
 
 			if (!this.options.disabled && this.visible && this.accept.call(this.element[0],(draggable.currentItem || draggable.element))) {
 				this.isout = 1; this.isover = 0;
@@ -237,12 +237,6 @@ $.ui.ddmanager = {
 		});
 		return dropped;
 
-	},
-	dragStart: function( draggable, event ) {
-		//Listen for scrolling so that if the dragging causes scrolling the position of the droppables can be recalculated (see #5003)
-		draggable.element.parents( ":not(body,html)" ).bind( "scroll.droppable", function() {
-			if( !draggable.options.refreshPositions ) $.ui.ddmanager.prepareOffsets( draggable, event );
-		});
 	},
 	drag: function(draggable, event) {
 
@@ -260,12 +254,7 @@ $.ui.ddmanager = {
 
 			var parentInstance;
 			if (this.options.greedy) {
-				// find droppable parents with same scope
-				var scope = this.options.scope;
-				var parent = this.element.parents(':data(droppable)').filter(function () {
-					return $.data(this, 'droppable').options.scope === scope;
-				});
-
+				var parent = this.element.parents(':data(droppable):eq(0)');
 				if (parent.length) {
 					parentInstance = $.data(parent[0], 'droppable');
 					parentInstance.greedyChild = (c == 'isover' ? 1 : 0);
@@ -290,11 +279,6 @@ $.ui.ddmanager = {
 			}
 		});
 
-	},
-	dragStop: function( draggable, event ) {
-		draggable.element.parents( ":not(body,html)" ).unbind( "scroll.droppable" );
-		//Call prepareOffsets one final time since IE does not fire return scroll events when overflow was caused by drag (see #5003)
-		if( !draggable.options.refreshPositions ) $.ui.ddmanager.prepareOffsets( draggable, event );
 	}
 };
 

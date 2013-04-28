@@ -153,7 +153,7 @@ function commerce_tax_ui_tax_rate_form($form, &$form_state, $tax_rate) {
       '#type' => 'machine_name',
       '#title' => t('Machine name'),
       '#default_value' => $tax_rate['name'],
-      '#maxlength' => 64,
+      '#maxlength' => 46,
       '#required' => TRUE,
       '#machine_name' => array(
         'exists' => 'commerce_tax_rate_load',
@@ -198,8 +198,7 @@ function commerce_tax_ui_tax_rate_form($form, &$form_state, $tax_rate) {
   );
 
   $form['actions'] = array(
-    '#type' => 'container',
-    '#attributes' => array('class' => array('form-actions')),
+    '#type' => 'actions',
     '#weight' => 40,
   );
 
@@ -345,7 +344,7 @@ function commerce_tax_ui_tax_type_form($form, &$form_state, $tax_type) {
       '#type' => 'machine_name',
       '#title' => t('Machine name'),
       '#default_value' => $tax_type['name'],
-      '#maxlength' => 64,
+      '#maxlength' => 46,
       '#required' => TRUE,
       '#machine_name' => array(
         'exists' => 'commerce_tax_type_load',
@@ -386,8 +385,7 @@ function commerce_tax_ui_tax_type_form($form, &$form_state, $tax_type) {
   );
 
   $form['actions'] = array(
-    '#type' => 'container',
-    '#attributes' => array('class' => array('form-actions')),
+    '#type' => 'actions',
     '#weight' => 40,
   );
 

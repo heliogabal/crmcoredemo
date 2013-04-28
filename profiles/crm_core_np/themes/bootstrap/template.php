@@ -25,7 +25,7 @@ if (theme_get_setting('bootstrap_rebuild_registry') && !defined('MAINTENANCE_MOD
 }
 
 /**
- * hook_theme() 
+ * Implements hook_theme().
  */
 function bootstrap_theme(&$existing, $type, $theme, $path) {
   // If we are auto-rebuilding the theme registry, warn about the feature.
@@ -54,27 +54,26 @@ function bootstrap_theme(&$existing, $type, $theme, $path) {
         'attributes' => array(),
         'type' => NULL
       ),
-    ), 
+    ),
+    'bootstrap_modal' => array(
+      'variables' => array(
+        'heading' => '',
+        'body' => '',
+        'footer' => '',
+        'attributes' => array(),
+      ),
+    ),
+    'bootstrap_accordion' => array(
+      'variables' => array(
+        'id' => '',
+        'elements' => array(),
+      ),
+    ),
+    'bootstrap_search_form_wrapper' => array(
+      'render element' => 'element',
+    ),
   );
 }
-
-/**
- * Preprocesses individual homebox blocks and gives them unique classes based on the name
- * @param unknown_type $variables
- */
-function crm_core_demo_preprocess_homebox(&$variables) {
-  $regions = $variables['regions'];
-  
-  foreach ($regions as $region){
-    foreach($region as $item => $value){
-      // dpm($region[$item][0]);
-      $new_class = check_plain(strtolower('crm_core_block_' . $region[$item][0]->subject));
-      $region[$item][0]->homebox_classes .= ' ' . $new_class;
-    }
-  }
-
-}
-
 
 /**
  * Override theme_breadrumb().
@@ -157,8 +156,6 @@ function bootstrap_preprocess_page(&$variables) {
     $variables['secondary_nav']['#theme_wrappers'] = array('menu_tree__secondary');
   }
 
-  // Replace tabs with drop down version
-  $variables['tabs']['#primary'] = _bootstrap_local_tasks($variables['tabs']['#primary']);
 }
 
 /**
@@ -298,3 +295,19 @@ function _bootstrap_content_span($columns = 1) {
   
   return $class;
 }
+
+/**
+ * Adds the search form's submit button right after the input element.
+ *
+ * @ingroup themable
+ */
+function bootstrap_bootstrap_search_form_wrapper(&$variables) {
+  $output = '<div class="input-append">';
+  $output .= $variables['element']['#children'];
+  $output .= '<button type="submit" class="btn">';
+  $output .= '<i class="icon-search"></i>';
+  $output .= '<span class="element-invisible">' . t('Search') . '</span>';
+  $output .= '</button>';
+  $output .= '</div>';
+  return $output;
+ }

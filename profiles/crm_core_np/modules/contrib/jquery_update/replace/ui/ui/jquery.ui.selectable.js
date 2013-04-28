@@ -1,7 +1,7 @@
-/*!
- * jQuery UI Selectable 1.8.24
+/*
+ * jQuery UI Selectable 1.8.11
  *
- * Copyright 2012, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  *
@@ -33,7 +33,6 @@ $.widget("ui.selectable", $.ui.mouse, {
 		var selectees;
 		this.refresh = function() {
 			selectees = $(self.options.filter, self.element[0]);
-			selectees.addClass("ui-selectee");
 			selectees.each(function() {
 				var $this = $(this);
 				var pos = $this.offset();
@@ -103,7 +102,7 @@ $.widget("ui.selectable", $.ui.mouse, {
 		this.selectees.filter('.ui-selected').each(function() {
 			var selectee = $.data(this, "selectable-item");
 			selectee.startselected = true;
-			if (!event.metaKey && !event.ctrlKey) {
+			if (!event.metaKey) {
 				selectee.$element.removeClass('ui-selected');
 				selectee.selected = false;
 				selectee.$element.addClass('ui-unselecting');
@@ -118,7 +117,7 @@ $.widget("ui.selectable", $.ui.mouse, {
 		$(event.target).parents().andSelf().each(function() {
 			var selectee = $.data(this, "selectable-item");
 			if (selectee) {
-				var doSelect = (!event.metaKey && !event.ctrlKey) || !selectee.$element.hasClass('ui-selected');
+				var doSelect = !event.metaKey || !selectee.$element.hasClass('ui-selected');
 				selectee.$element
 					.removeClass(doSelect ? "ui-unselecting" : "ui-selected")
 					.addClass(doSelect ? "ui-selecting" : "ui-unselecting");
@@ -188,7 +187,7 @@ $.widget("ui.selectable", $.ui.mouse, {
 			} else {
 				// UNSELECT
 				if (selectee.selecting) {
-					if ((event.metaKey || event.ctrlKey) && selectee.startselected) {
+					if (event.metaKey && selectee.startselected) {
 						selectee.$element.removeClass('ui-selecting');
 						selectee.selecting = false;
 						selectee.$element.addClass('ui-selected');
@@ -207,7 +206,7 @@ $.widget("ui.selectable", $.ui.mouse, {
 					}
 				}
 				if (selectee.selected) {
-					if (!event.metaKey && !event.ctrlKey && !selectee.startselected) {
+					if (!event.metaKey && !selectee.startselected) {
 						selectee.$element.removeClass('ui-selected');
 						selectee.selected = false;
 
@@ -261,7 +260,7 @@ $.widget("ui.selectable", $.ui.mouse, {
 });
 
 $.extend($.ui.selectable, {
-	version: "1.8.24"
+	version: "1.8.11"
 });
 
 })(jQuery);

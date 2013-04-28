@@ -12,12 +12,55 @@ function bootstrap_form_alter(&$form, &$form_state, $form_id) {
     'user_profile_form',
     'node_delete_confirm',
   );
-  
+
   // Only wrap in container for certain form
   if (isset($form['#form_id']) && !in_array($form['#form_id'], $form_ids) && !isset($form['#node_edit_form'])) {
     $form['actions']['#theme_wrappers'] = array();
   }
 }  
+
+/**
+ * Implements hook_form_FORM_ID_alter() for search_form().
+ */
+function bootstrap_form_search_form_alter(&$form, &$form_state) {
+  $form['#attributes']['class'][] = 'form-search';
+  $form['#attributes']['class'][] = 'pull-left';
+
+  $form['basic']['keys']['#title'] = '';
+  $form['basic']['keys']['#attributes']['class'][] = 'search-query';
+  $form['basic']['keys']['#attributes']['class'][] = 'span2';
+  $form['basic']['keys']['#attributes']['placeholder'] = t('Search');
+
+  // Hide the default button from display and implement a theme wrapper to add
+  // a submit button containing a search icon directly after the input element.
+  $form['basic']['submit']['#attributes']['class'][] = 'element-invisible';
+  $form['basic']['keys']['#theme_wrappers'][] = 'bootstrap_search_form_wrapper';
+
+  // Apply a clearfix so the results don't overflow onto the form.
+  $form['#suffix'] = '<div class="clearfix"></div>';
+  $form['#attributes']['class'][] = 'content-search';
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for search_block_form().
+ */
+function bootstrap_form_search_block_form_alter(&$form, &$form_state) {
+  $form['#attributes']['class'][] = 'form-search';
+  $form['#attributes']['class'][] = 'pull-left';
+
+  $form['search_block_form']['#title'] = '';
+  $form['search_block_form']['#attributes']['class'][] = 'search-query';
+  $form['search_block_form']['#attributes']['class'][] = 'span2';
+  $form['search_block_form']['#attributes']['placeholder'] = t('Search');
+
+  // Hide the default button from display and implement a theme wrapper to add
+  // a submit button containing a search icon directly after the input element.
+  $form['actions']['submit']['#attributes']['class'][] = 'element-invisible';
+  $form['search_block_form']['#theme_wrappers'][] = 'bootstrap_search_form_wrapper';
+
+  // Apply a clearfix so the results don't overflow onto the form.
+  $form['#attributes']['class'][] = 'content-search';
+}
 
 /**
  * Returns HTML for a form element.
@@ -41,7 +84,7 @@ function bootstrap_form_element(&$variables) {
   $exclude_control = FALSE;
   $control_wrapper = '<div class="controls">';
   // Add bootstrap class
-  if ($element['#type'] == "radio" || $element['#type'] == "checkbox") {
+  if (isset($element['#type']) && ($element['#type'] == "radio" || $element['#type'] == "checkbox")){
     $exclude_control = TRUE;
   }
   else {
@@ -215,7 +258,7 @@ function bootstrap_preprocess_button(&$vars) {
  */
 function bootstrap_button($variables) {
   $element = $variables['element'];
-  $label = check_plain($element['#value']);
+  $label = $element['#value'];
   element_set_attributes($element, array('id', 'name', 'value', 'type'));
 
   $element['#attributes']['class'][] = 'form-' . $element['#button_type'];
@@ -226,7 +269,7 @@ function bootstrap_button($variables) {
   // Prepare input whitelist - added to ensure ajax functions don't break
   $whitelist = _bootstrap_element_whitelist();
 
-  if (isset($element['#id']) && in_array($element['#id'], $whitelist)) {
+  if (in_array($element['#id'], $whitelist)) {
     return '<input' . drupal_attributes($element['#attributes']) . ">\n"; // This line break adds inherent margin between multiple buttons
   }
   else {

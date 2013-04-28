@@ -1,7 +1,7 @@
-/*!
- * jQuery UI Button 1.8.24
+/*
+ * jQuery UI Button 1.8.11
  *
- * Copyright 2012, AUTHORS.txt (http://jqueryui.com/about)
+ * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT or GPL Version 2 licenses.
  * http://jquery.org/license
  *
@@ -13,15 +13,17 @@
  */
 (function( $, undefined ) {
 
-var lastActive, startXPos, startYPos, clickDragged,
+var lastActive,
 	baseClasses = "ui-button ui-widget ui-state-default ui-corner-all",
 	stateClasses = "ui-state-hover ui-state-active ",
 	typeClasses = "ui-button-icons-only ui-button-icon-only ui-button-text-icons ui-button-text-icon-primary ui-button-text-icon-secondary ui-button-text-only",
-	formResetHandler = function() {
-		var buttons = $( this ).find( ":ui-button" );
-		setTimeout(function() {
-			buttons.button( "refresh" );
-		}, 1 );
+	formResetHandler = function( event ) {
+		$( ":ui-button", event.target.form ).each(function() {
+			var inst = $( this ).data( "button" );
+			setTimeout(function() {
+				inst.refresh();
+			}, 1 );
+		});
 	},
 	radioGroup = function( radio ) {
 		var name = radio.name,
@@ -56,9 +58,7 @@ $.widget( "ui.button", {
 			.bind( "reset.button", formResetHandler );
 
 		if ( typeof this.options.disabled !== "boolean" ) {
-			this.options.disabled = !!this.element.propAttr( "disabled" );
-		} else {
-			this.element.propAttr( "disabled", this.options.disabled );
+			this.options.disabled = this.element.attr( "disabled" );
 		}
 
 		this._determineButtonType();
@@ -72,6 +72,10 @@ $.widget( "ui.button", {
 
 		if ( options.label === null ) {
 			options.label = this.buttonElement.html();
+		}
+
+		if ( this.element.is( ":disabled" ) ) {
+			options.disabled = true;
 		}
 
 		this.buttonElement
@@ -92,54 +96,23 @@ $.widget( "ui.button", {
 				}
 				$( this ).removeClass( hoverClass );
 			})
-			.bind( "click.button", function( event ) {
-				if ( options.disabled ) {
-					event.preventDefault();
-					event.stopImmediatePropagation();
-				}
-			});
-
-		this.element
 			.bind( "focus.button", function() {
 				// no need to check disabled, focus won't be triggered anyway
-				self.buttonElement.addClass( focusClass );
+				$( this ).addClass( focusClass );
 			})
 			.bind( "blur.button", function() {
-				self.buttonElement.removeClass( focusClass );
+				$( this ).removeClass( focusClass );
 			});
 
 		if ( toggleButton ) {
 			this.element.bind( "change.button", function() {
-				if ( clickDragged ) {
-					return;
-				}
 				self.refresh();
-			});
-			// if mouse moves between mousedown and mouseup (drag) set clickDragged flag
-			// prevents issue where button state changes but checkbox/radio checked state
-			// does not in Firefox (see ticket #6970)
-			this.buttonElement
-				.bind( "mousedown.button", function( event ) {
-					if ( options.disabled ) {
-						return;
-					}
-					clickDragged = false;
-					startXPos = event.pageX;
-					startYPos = event.pageY;
-				})
-				.bind( "mouseup.button", function( event ) {
-					if ( options.disabled ) {
-						return;
-					}
-					if ( startXPos !== event.pageX || startYPos !== event.pageY ) {
-						clickDragged = true;
-					}
 			});
 		}
 
 		if ( this.type === "checkbox" ) {
 			this.buttonElement.bind( "click.button", function() {
-				if ( options.disabled || clickDragged ) {
+				if ( options.disabled ) {
 					return false;
 				}
 				$( this ).toggleClass( "ui-state-active" );
@@ -147,11 +120,11 @@ $.widget( "ui.button", {
 			});
 		} else if ( this.type === "radio" ) {
 			this.buttonElement.bind( "click.button", function() {
-				if ( options.disabled || clickDragged ) {
+				if ( options.disabled ) {
 					return false;
 				}
 				$( this ).addClass( "ui-state-active" );
-				self.buttonElement.attr( "aria-pressed", "true" );
+				self.buttonElement.attr( "aria-pressed", true );
 
 				var radio = self.element[ 0 ];
 				radioGroup( radio )
@@ -160,7 +133,7 @@ $.widget( "ui.button", {
 						return $( this ).button( "widget" )[ 0 ];
 					})
 					.removeClass( "ui-state-active" )
-					.attr( "aria-pressed", "false" );
+					.attr( "aria-pressed", false );
 			});
 		} else {
 			this.buttonElement
@@ -206,26 +179,29 @@ $.widget( "ui.button", {
 		// $.Widget.prototype._setOptionDisabled so it's easy to proxy and can
 		// be overridden by individual plugins
 		this._setOption( "disabled", options.disabled );
-		this._resetButton();
 	},
 
 	_determineButtonType: function() {
-
+		
 		if ( this.element.is(":checkbox") ) {
 			this.type = "checkbox";
-		} else if ( this.element.is(":radio") ) {
-			this.type = "radio";
-		} else if ( this.element.is("input") ) {
-			this.type = "input";
 		} else {
-			this.type = "button";
+			if ( this.element.is(":radio") ) {
+				this.type = "radio";
+			} else {
+				if ( this.element.is("input") ) {
+					this.type = "input";
+				} else {
+					this.type = "button";
+				}
+			}
 		}
-
+		
 		if ( this.type === "checkbox" || this.type === "radio" ) {
 			// we don't search against the document in case the element
 			// is disconnected from the DOM
 			var ancestor = this.element.parents().filter(":last"),
-				labelSelector = "label[for='" + this.element.attr("id") + "']";
+				labelSelector = "label[for=" + this.element.attr("id") + "]";
 			this.buttonElement = ancestor.find( labelSelector );
 			if ( !this.buttonElement.length ) {
 				ancestor = ancestor.length ? ancestor.siblings() : this.element.siblings();
@@ -270,11 +246,10 @@ $.widget( "ui.button", {
 		$.Widget.prototype._setOption.apply( this, arguments );
 		if ( key === "disabled" ) {
 			if ( value ) {
-				this.element.propAttr( "disabled", true );
+				this.element.attr( "disabled", true );
 			} else {
-				this.element.propAttr( "disabled", false );
+				this.element.removeAttr( "disabled" );
 			}
-			return;
 		}
 		this._resetButton();
 	},
@@ -289,22 +264,22 @@ $.widget( "ui.button", {
 				if ( $( this ).is( ":checked" ) ) {
 					$( this ).button( "widget" )
 						.addClass( "ui-state-active" )
-						.attr( "aria-pressed", "true" );
+						.attr( "aria-pressed", true );
 				} else {
 					$( this ).button( "widget" )
 						.removeClass( "ui-state-active" )
-						.attr( "aria-pressed", "false" );
+						.attr( "aria-pressed", false );
 				}
 			});
 		} else if ( this.type === "checkbox" ) {
 			if ( this.element.is( ":checked" ) ) {
 				this.buttonElement
 					.addClass( "ui-state-active" )
-					.attr( "aria-pressed", "true" );
+					.attr( "aria-pressed", true );
 			} else {
 				this.buttonElement
 					.removeClass( "ui-state-active" )
-					.attr( "aria-pressed", "false" );
+					.attr( "aria-pressed", false );
 			}
 		}
 	},
@@ -317,7 +292,7 @@ $.widget( "ui.button", {
 			return;
 		}
 		var buttonElement = this.buttonElement.removeClass( typeClasses ),
-			buttonText = $( "<span></span>", this.element[0].ownerDocument )
+			buttonText = $( "<span></span>" )
 				.addClass( "ui-button-text" )
 				.html( this.options.label )
 				.appendTo( buttonElement.empty() )
@@ -375,8 +350,6 @@ $.widget( "ui.buttonset", {
 	},
 	
 	refresh: function() {
-		var rtl = this.element.css( "direction" ) === "rtl";
-		
 		this.buttons = this.element.find( this.options.items )
 			.filter( ":ui-button" )
 				.button( "refresh" )
@@ -389,10 +362,10 @@ $.widget( "ui.buttonset", {
 			})
 				.removeClass( "ui-corner-all ui-corner-left ui-corner-right" )
 				.filter( ":first" )
-					.addClass( rtl ? "ui-corner-right" : "ui-corner-left" )
+					.addClass( "ui-corner-left" )
 				.end()
 				.filter( ":last" )
-					.addClass( rtl ? "ui-corner-left" : "ui-corner-right" )
+					.addClass( "ui-corner-right" )
 				.end()
 			.end();
 	},

@@ -6,14 +6,14 @@
 function bootstrap_menu_local_tasks(&$variables) {
   $output = '';
 
-  if ( !empty($variables['primary']) ) {
+  if (!empty($variables['primary'])) {
     $variables['primary']['#prefix'] = '<h2 class="element-invisible">' . t('Primary tabs') . '</h2>';
     $variables['primary']['#prefix'] = '<ul class="nav nav-tabs">';
     $variables['primary']['#suffix'] = '</ul>';
     $output .= drupal_render($variables['primary']);
   }
 
-  if ( !empty($variables['secondary']) ) {
+  if (!empty($variables['secondary'])) {
     $variables['primary']['#prefix'] = '<h2 class="element-invisible">' . t('Primary tabs') . '</h2>';
     $variables['secondary']['#prefix'] = '<ul class="nav nav-pills">';
     $variables['secondary']['#suffix'] = '</ul>';
@@ -85,63 +85,4 @@ function bootstrap_menu_link(array $variables) {
   
   $output = l($element['#title'], $element['#href'], $element['#localized_options']);
   return '<li' . drupal_attributes($element['#attributes']) . '>' . $output . $sub_menu . "</li>\n";
-}
-
-/**
-* Get all primary tasks including subsets
-*/
-function _bootstrap_local_tasks($tabs = FALSE) {
-  if ($tabs == '') {
-    return $tabs;
-  }
-  
-  if (!$tabs) {
-    $tabs = menu_primary_local_tasks();
-  }
-  
-  foreach ($tabs as $key => $element) {
-    $result = db_select('menu_router', NULL, array('fetch' => PDO::FETCH_ASSOC))
-      ->fields('menu_router')
-      ->condition('tab_parent', $element['#link']['path'])
-      ->condition('context', MENU_CONTEXT_INLINE, '<>')
-      ->condition('type', array(MENU_DEFAULT_LOCAL_TASK, MENU_LOCAL_TASK), 'IN')
-      ->orderBy('weight')
-      ->orderBy('title')
-      ->execute();
-  
-    $router_item = menu_get_item($element['#link']['href']);
-    $map = $router_item['original_map'];
-  
-    $i = 0;
-    foreach ($result as $item) {
-      _menu_translate($item, $map, TRUE);
-  
-      //only add items that we have access to
-      if ($item['tab_parent'] && $item['access']) {
-        //set path to that of parent for the first item
-        if ($i === 0) {
-          $item['href'] = $element['#link']['href'];
-        }
-  
-        if (current_path() == $item['href']) {
-          $tabs[$key][] = array(
-          '#theme' => 'menu_local_task',
-          '#link' => $item,
-          '#active' => TRUE,
-          );
-        }
-        else {
-          $tabs[$key][] = array(
-          '#theme' => 'menu_local_task',
-          '#link' => $item,
-          );
-        }
-  
-        //only count items we have access to.
-        $i++;
-      }
-    }
-  }
-  
-  return $tabs;
 }

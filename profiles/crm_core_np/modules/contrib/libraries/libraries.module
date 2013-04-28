@@ -423,6 +423,7 @@ function libraries_info_defaults(&$library, $name) {
     'info' => array(),
     'pre-detect' => array(),
     'post-detect' => array(),
+    'pre-dependencies-load' => array(),
     'pre-load' => array(),
     'post-load' => array(),
   );
@@ -611,6 +612,9 @@ function libraries_load($name, $variant = NULL) {
     // Regardless of whether a specific variant was requested or not, there can
     // only be one variant of a library within a single request.
     unset($library['variants']);
+
+    // Invoke callbacks in the 'pre-dependencies-load' group.
+    libraries_invoke('pre-dependencies-load', $library);
 
     // If the library (variant) is installed, load it.
     $library['loaded'] = FALSE;

@@ -102,6 +102,7 @@ dependencies[] = commerce_node_product
 dependencies[] = calendar
 dependencies[] = jquery_update
 dependencies[] = compact_forms
+dependencies[] = proj4js
 
 ; Install CRM Core Contrib modules
 dependencies[] = crm_core_profile
@@ -118,6 +119,7 @@ dependencies[] = diff
 dependencies[] = pathauto
 dependencies[] = rules
 dependencies[] = rules_admin
+dependencies[] = module_filter
 
 ; Install sample data requirements
 dependencies[] = devel

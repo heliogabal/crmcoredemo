@@ -70,6 +70,21 @@ class CommerceOrderEntityController extends DrupalCommerceEntityController {
         $order->created = REQUEST_TIME;
         $order->hostname = ip_address();
       }
+      else {
+        // Otherwise if the order is not new but comes from an entity_create()
+        // or similar function call that initializes the created timestamp, uid,
+        // and hostname values to empty strings, unset them to prevent
+        // destroying existing data in those properties on update.
+        if ($order->created === '') {
+          unset($order->created);
+        }
+        if ($order->uid === '') {
+          unset($order->uid);
+        }
+        if ($order->hostname === '') {
+          unset($order->hostname);
+        }
+      }
 
       $order->changed = REQUEST_TIME;
 
@@ -120,5 +135,4 @@ class CommerceOrderEntityController extends DrupalCommerceEntityController {
     // hook_commerce_order_load().
     parent::attachLoad($queried_orders, $revision_id);
   }
-
 }
