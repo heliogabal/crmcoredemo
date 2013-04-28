@@ -295,11 +295,12 @@ function install_begin_request(&$install_state) {
   else {
     $task = NULL;
 
-    // Do not install over a configured settings.php. Check the 'db_url'
-    // variable in addition to 'databases', since previous versions of Drupal
-    // used that (and we do not want to allow installations on an existing site
-    // whose settings file has not yet been updated).
-    if (!empty($GLOBALS['databases']) || !empty($GLOBALS['db_url'])) {
+    // Since previous versions of Drupal stored database connection information
+    // in the 'db_url' variable, we should never let an installation proceed if
+    // this variable is defined and the settings file was not verified above
+    // (otherwise we risk installing over an existing site whose settings file
+    // has not yet been updated).
+    if (!empty($GLOBALS['db_url'])) {
       throw new Exception(install_already_done_error());
     }
   }
@@ -1016,19 +1017,7 @@ function install_select_profile(&$install_state) {
   $install_state['profiles'] += install_find_profiles();
   if (empty($install_state['parameters']['profile'])) {
     // Try to find a profile.
-    $profiles = $install_state['profiles'];
-    foreach ($profiles as $key => $profile) {
-      $details = install_profile_info($profile->name);
-      // Remove hidden profiles (such as the testing profile, which only exists
-      // to speed up test runs) from the list. This prevents them from being
-      // displayed in the user interface, and also means that if there is only
-      // one non-hidden profile, _install_select_profile() will choose it
-      // automatically.
-      if (!empty($details['hidden'])) {
-        unset($profiles[$key]);
-      }
-    }
-    $profile = _install_select_profile($profiles);
+    $profile = _install_select_profile($install_state['profiles']);
     if (empty($profile)) {
       // We still don't have a profile, so display a form for selecting one.
       // Only do this in the case of interactive installations, since this is
@@ -1038,7 +1027,7 @@ function install_select_profile(&$install_state) {
       if ($install_state['interactive']) {
         include_once DRUPAL_ROOT . '/includes/form.inc';
         drupal_set_title(st('Select an installation profile'));
-        $form = drupal_get_form('install_select_profile_form', $profiles);
+        $form = drupal_get_form('install_select_profile_form', $install_state['profiles']);
         return drupal_render($form);
       }
       else {

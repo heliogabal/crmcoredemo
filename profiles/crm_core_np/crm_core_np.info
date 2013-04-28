@@ -65,10 +65,10 @@ dependencies[] = crm_core
 dependencies[] = crm_core_contact
 dependencies[] = crm_core_relationship
 dependencies[] = crm_core_activity
-dependencies[] = crm_user_sync
+dependencies[] = crm_core_user_sync
 
 ; Install CRM Core UI modules.
-dependencies[] = crm_ui
+dependencies[] = crm_core_ui
 dependencies[] = crm_core_contact_ui
 dependencies[] = crm_core_activity_ui
 dependencies[] = crm_core_relationship_ui
