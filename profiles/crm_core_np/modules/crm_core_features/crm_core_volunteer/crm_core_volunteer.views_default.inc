@@ -474,14 +474,14 @@ function crm_core_volunteer_views_default_views() {
   $handler->display->display_options['relationships']['field_activity_participants_target_id']['label'] = 'Contact';
   $handler->display->display_options['relationships']['field_activity_participants_target_id']['required'] = TRUE;
   /* Relationship: CRM Contact: Relation: User (crm_core_contact -&gt; user) */
-  $handler->display->display_options['relationships']['relation_crm_user_sync_user']['id'] = 'relation_crm_user_sync_user';
-  $handler->display->display_options['relationships']['relation_crm_user_sync_user']['table'] = 'crm_core_contact';
-  $handler->display->display_options['relationships']['relation_crm_user_sync_user']['field'] = 'relation_crm_user_sync_user';
-  $handler->display->display_options['relationships']['relation_crm_user_sync_user']['relationship'] = 'field_activity_participants_target_id';
-  $handler->display->display_options['relationships']['relation_crm_user_sync_user']['required'] = TRUE;
-  $handler->display->display_options['relationships']['relation_crm_user_sync_user']['r_index'] = '-1';
-  $handler->display->display_options['relationships']['relation_crm_user_sync_user']['entity_deduplication_left'] = 0;
-  $handler->display->display_options['relationships']['relation_crm_user_sync_user']['entity_deduplication_right'] = 0;
+  $handler->display->display_options['relationships']['relation_crm_core_user_sync_user']['id'] = 'relation_crm_core_user_sync_user';
+  $handler->display->display_options['relationships']['relation_crm_core_user_sync_user']['table'] = 'crm_core_contact';
+  $handler->display->display_options['relationships']['relation_crm_core_user_sync_user']['field'] = 'relation_crm_core_user_sync_user';
+  $handler->display->display_options['relationships']['relation_crm_core_user_sync_user']['relationship'] = 'field_activity_participants_target_id';
+  $handler->display->display_options['relationships']['relation_crm_core_user_sync_user']['required'] = TRUE;
+  $handler->display->display_options['relationships']['relation_crm_core_user_sync_user']['r_index'] = '-1';
+  $handler->display->display_options['relationships']['relation_crm_core_user_sync_user']['entity_deduplication_left'] = 0;
+  $handler->display->display_options['relationships']['relation_crm_core_user_sync_user']['entity_deduplication_right'] = 0;
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -518,7 +518,7 @@ function crm_core_volunteer_views_default_views() {
   $handler->display->display_options['arguments']['uid']['id'] = 'uid';
   $handler->display->display_options['arguments']['uid']['table'] = 'users';
   $handler->display->display_options['arguments']['uid']['field'] = 'uid';
-  $handler->display->display_options['arguments']['uid']['relationship'] = 'relation_crm_user_sync_user';
+  $handler->display->display_options['arguments']['uid']['relationship'] = 'relation_crm_core_user_sync_user';
   $handler->display->display_options['arguments']['uid']['default_action'] = 'default';
   $handler->display->display_options['arguments']['uid']['default_argument_type'] = 'current_user';
   $handler->display->display_options['arguments']['uid']['summary']['number_of_records'] = '0';

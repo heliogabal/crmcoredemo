@@ -68,9 +68,9 @@ function crm_core_volunteer_entity_insert($entity, $type) {
       // we have to award the user that's in the activity or the current user?
       // we should award to the user on the particiant list because admin can create this activity
       // from the ui
-      if (module_exists('crm_user_sync')) {
+      if (module_exists('crm_core_user_sync')) {
         $contact_id = $entity->field_activity_participants[LANGUAGE_NONE][0]['target_id'];
-        $activity_user = _crm_user_sync_get_related_entity('crm_core_contact', $contact_id, 'crm_user_sync');        
+        $activity_user = _crm_core_user_sync_get_related_entity('crm_core_contact', $contact_id, 'crm_core_user_sync');        
       } 
       else {
         $activity_user = $user;
