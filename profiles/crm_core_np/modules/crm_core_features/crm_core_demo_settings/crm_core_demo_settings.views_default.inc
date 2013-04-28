@@ -251,12 +251,12 @@ function crm_core_demo_settings_views_default_views() {
   $handler->display->display_options['empty']['area']['content'] = 'There are no contacts in the CRM.  Add one by clicking above.';
   $handler->display->display_options['empty']['area']['format'] = 'filtered_html';
   /* Relationship: CRM Contact: Relation: User (crm_core_contact -&gt; user) */
-  $handler->display->display_options['relationships']['relation_crm_user_sync_user']['id'] = 'relation_crm_user_sync_user';
-  $handler->display->display_options['relationships']['relation_crm_user_sync_user']['table'] = 'crm_core_contact';
-  $handler->display->display_options['relationships']['relation_crm_user_sync_user']['field'] = 'relation_crm_user_sync_user';
-  $handler->display->display_options['relationships']['relation_crm_user_sync_user']['r_index'] = '-1';
-  $handler->display->display_options['relationships']['relation_crm_user_sync_user']['entity_deduplication_left'] = 0;
-  $handler->display->display_options['relationships']['relation_crm_user_sync_user']['entity_deduplication_right'] = 0;
+  $handler->display->display_options['relationships']['relation_crm_core_user_sync_user']['id'] = 'relation_crm_core_user_sync_user';
+  $handler->display->display_options['relationships']['relation_crm_core_user_sync_user']['table'] = 'crm_core_contact';
+  $handler->display->display_options['relationships']['relation_crm_core_user_sync_user']['field'] = 'relation_crm_core_user_sync_user';
+  $handler->display->display_options['relationships']['relation_crm_core_user_sync_user']['r_index'] = '-1';
+  $handler->display->display_options['relationships']['relation_crm_core_user_sync_user']['entity_deduplication_left'] = 0;
+  $handler->display->display_options['relationships']['relation_crm_core_user_sync_user']['entity_deduplication_right'] = 0;
   /* Field: Bulk operations: CRM Contact */
   $handler->display->display_options['fields']['views_bulk_operations']['id'] = 'views_bulk_operations';
   $handler->display->display_options['fields']['views_bulk_operations']['table'] = 'crm_core_contact';
@@ -344,7 +344,7 @@ function crm_core_demo_settings_views_default_views() {
   $handler->display->display_options['fields']['name']['id'] = 'name';
   $handler->display->display_options['fields']['name']['table'] = 'users';
   $handler->display->display_options['fields']['name']['field'] = 'name';
-  $handler->display->display_options['fields']['name']['relationship'] = 'relation_crm_user_sync_user';
+  $handler->display->display_options['fields']['name']['relationship'] = 'relation_crm_core_user_sync_user';
   $handler->display->display_options['fields']['name']['label'] = 'User Name';
   $handler->display->display_options['fields']['name']['exclude'] = TRUE;
   $handler->display->display_options['fields']['name']['empty'] = 'No user account';
@@ -420,7 +420,7 @@ function crm_core_demo_settings_views_default_views() {
   $handler->display->display_options['fields']['uid']['id'] = 'uid';
   $handler->display->display_options['fields']['uid']['table'] = 'users';
   $handler->display->display_options['fields']['uid']['field'] = 'uid';
-  $handler->display->display_options['fields']['uid']['relationship'] = 'relation_crm_user_sync_user';
+  $handler->display->display_options['fields']['uid']['relationship'] = 'relation_crm_core_user_sync_user';
   $handler->display->display_options['fields']['uid']['label'] = 'User Account';
   $handler->display->display_options['fields']['uid']['alter']['alter_text'] = TRUE;
   $handler->display->display_options['fields']['uid']['alter']['text'] = '<A href="user/[uid]">[name]</a>';
@@ -432,7 +432,7 @@ function crm_core_demo_settings_views_default_views() {
   $handler->display->display_options['fields']['access']['id'] = 'access';
   $handler->display->display_options['fields']['access']['table'] = 'users';
   $handler->display->display_options['fields']['access']['field'] = 'access';
-  $handler->display->display_options['fields']['access']['relationship'] = 'relation_crm_user_sync_user';
+  $handler->display->display_options['fields']['access']['relationship'] = 'relation_crm_core_user_sync_user';
   $handler->display->display_options['fields']['access']['empty'] = '---';
   $handler->display->display_options['fields']['access']['date_format'] = 'date_format_slim';
   /* Field: Global: Custom text */

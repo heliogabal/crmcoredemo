@@ -237,7 +237,7 @@ function crm_core_demo_settings_preprocess_contact(&$variables) {
     
     // check to see if the contact has an associated user account
     // if so, create some markup around it
-    $cuser = crm_user_sync_get_user_from_contact_id($variables['cid']);
+    $cuser = crm_core_user_sync_get_user_from_contact_id($variables['cid']);
     if(isset($cuser->uid)){
       $variables['user'] = 'I have a user account';    
     }
